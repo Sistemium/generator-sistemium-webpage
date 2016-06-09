@@ -90,9 +90,9 @@ export class Generator extends Base {
 
               this.scriptExt = this.filters.ts ? 'ts' : 'js';
               this.templateExt = this.filters.jade ? 'jade' : 'html';
-              this.styleExt = this.filters.sass ? 'scss' : 
-                this.filters.less ? 'less' : 
-                this.filters.stylus ? 'styl' : 
+              this.styleExt = this.filters.sass ? 'scss' :
+                this.filters.less ? 'less' :
+                this.filters.stylus ? 'styl' :
                 'css';
             } else {
               insight.track('skipConfig', 'false');
@@ -109,236 +109,248 @@ export class Generator extends Base {
 
   get prompting() {
     return {
-      clientPrompts: function() {
-        if(this.skipConfig) return;
-
-        this.log('# Client\n');
+      myPrompts: function () {
+        this.log('# My prompts\n');
 
         return this.prompt([{
-            type: 'list',
-            name: 'transpiler',
-            message: 'What would you like to write scripts with?',
-            choices: ['Babel', 'TypeScript'],
-            filter: val => {
-              return {
-                'Babel': 'babel',
-                'TypeScript': 'ts'
-              }[val];
-            }
-          }, {
-          // TODO: enable once Babel setup supports Flow
-          //   type: 'confirm',
-          //   name: 'flow',
-          //   message: 'Would you like to use Flow types with Babel?',
-          //   when: answers => answers.transpiler === 'babel'
-          // }, {
-            type: 'list',
-            name: 'markup',
-            message: 'What would you like to write markup with?',
-            choices: ['HTML', 'Jade'],
-            filter: val => val.toLowerCase()
-          }, {
-            type: 'list',
-            name: 'stylesheet',
-            default: 1,
-            message: 'What would you like to write stylesheets with?',
-            choices: ['CSS', 'Sass', 'Stylus', 'Less'],
-            filter: val => val.toLowerCase()
-          },  {
-            type: 'list',
-            name: 'router',
-            default: 1,
-            message: 'What Angular router would you like to use?',
-            choices: ['ngRoute', 'uiRouter'],
-            filter: val => val.toLowerCase()
-          }, {
-            type: 'confirm',
-            name: 'bootstrap',
-            message: 'Would you like to include Bootstrap?'
-          }, {
-            type: 'confirm',
-            name: 'uibootstrap',
-            message: 'Would you like to include UI Bootstrap?',
-            when: answers => answers.bootstrap
-          }]).then(answers => {
-            this.filters.js = true;
-            this.filters[answers.transpiler] = true;
-            insight.track('transpiler', answers.transpiler);
-
-            this.filters.flow = !!answers.flow;
-            insight.track('flow', !!answers.flow);
-
-            this.filters[answers.markup] = true;
-            insight.track('markup', answers.markup);
-
-            this.filters[answers.stylesheet] = true;
-            insight.track('stylesheet', answers.stylesheet);
-
-            this.filters[answers.router] = true;
-            insight.track('router', answers.router);
-
-            this.filters.bootstrap = !!answers.bootstrap;
-            insight.track('bootstrap', !!answers.bootstrap);
-
-            this.filters.uibootstrap =  !!answers.uibootstrap;
-            insight.track('uibootstrap', !!answers.uibootstrap);
-
-            this.scriptExt = answers.transpiler === 'ts' ? 'ts' : 'js';
-            this.templateExt = answers.markup;
-
-            var styleExt = {sass: 'scss', stylus: 'styl'}[answers.stylesheet];
-            this.styleExt = styleExt ? styleExt : answers.stylesheet;
-          });
-      },
-      serverPrompts: function() {
-        if(this.skipConfig) return;
-        var self = this;
-
-        this.log('\n# Server\n');
-
-        return this.prompt([{
-          type: 'checkbox',
-          name: 'odms',
-          message: 'What would you like to use for data modeling?',
-          choices: [{
-            value: 'mongoose',
-            name: 'Mongoose (MongoDB)',
-            checked: true
-          }, {
-            value: 'sequelize',
-            name: 'Sequelize (MySQL, SQLite, MariaDB, PostgreSQL)',
-            checked: false
-          }]
-        }, {
-          type: 'list',
-          name: 'models',
-          message: 'What would you like to use for the default models?',
-          choices: [ 'Mongoose', 'Sequelize' ],
-          filter: val => val.toLowerCase(),
-          when: answers => answers.odms && answers.odms.length > 1
-        }, {
-          type: 'confirm',
-          name: 'auth',
-          message: 'Would you scaffold out an authentication boilerplate?',
-          when: answers => answers.odms && answers.odms.length !== 0
-        }, {
-          type: 'checkbox',
-          name: 'oauth',
-          message: 'Would you like to include additional oAuth strategies?',
-          when: answers => answers.auth,
-          choices: [{
-            value: 'googleAuth',
-            name: 'Google',
-            checked: false
-          }, {
-            value: 'facebookAuth',
-            name: 'Facebook',
-            checked: false
-          }, {
-            value: 'twitterAuth',
-            name: 'Twitter',
-            checked: false
-          }]
-        }, {
-          type: 'confirm',
-          name: 'socketio',
-          message: 'Would you like to use socket.io?',
-          // to-do: should not be dependent on ODMs
-          when: answers => answers.odms && answers.odms.length !== 0,
-          default: true
-        }]).then(answers => {
-          if(answers.socketio) this.filters.socketio = true;
-          insight.track('socketio', !!answers.socketio);
-
-          if(answers.auth) this.filters.auth = true;
-          insight.track('auth', !!answers.auth);
-
-          if(answers.odms && answers.odms.length > 0) {
-            var models;
-            if(!answers.models) {
-              models = answers.odms[0];
-            } else {
-              models = answers.models;
-            }
-            this.filters.models = true;
-            this.filters[models + 'Models'] = true;
-            answers.odms.forEach(odm => {
-              this.filters[odm] = true;
-            });
-            insight.track('oauth', !!answers.oauth);
-          } else {
-            this.filters.noModels = true;
-          }
-          insight.track('odms', answers.odms && answers.odms.length > 0);
-          insight.track('mongoose', !!this.filters.mongoose);
-          insight.track('mongooseModels', !!this.filters.mongooseModels);
-          insight.track('sequelize', !!this.filters.sequelize);
-          insight.track('sequelizeModels', !!this.filters.sequelizeModels);
-
-          if(answers.oauth) {
-            if(answers.oauth.length) this.filters.oauth = true;
-            answers.oauth.forEach(oauthStrategy => {
-              this.filters[oauthStrategy] = true;
-            });
-          }
-          insight.track('oauth', !!this.filters.oauth);
-          insight.track('google-oauth', !!this.filters['googleAuth']);
-          insight.track('facebook-oauth', !!this.filters['facebookAuth']);
-          insight.track('twitter-oauth', !!this.filters['twitterAuth']);
-        });
-      },
-      projectPrompts: function() {
-        if(this.skipConfig) return;
-        var self = this;
-
-        this.log('\n# Project\n');
-
-        return this.prompt([{
-          type: 'list',
-          name: 'buildtool',
-          message: 'Would you like to use Gulp or Grunt?',
-          choices: ['Grunt', 'Gulp'],
-          default: 1,
-          filter: val => val.toLowerCase()
-        }, {
-          type: 'list',
-          name: 'testing',
-          message: 'What would you like to write tests with?',
-          choices: ['Jasmine', 'Mocha + Chai + Sinon'],
-          default: 1,
-          filter: function(val) {
-            return {
-              'Jasmine': 'jasmine',
-              'Mocha + Chai + Sinon': 'mocha'
-            }[val];
-          }
-        }, {
-          type: 'list',
-          name: 'chai',
-          message: 'What would you like to write Chai assertions with?',
-          choices: ['Expect', 'Should'],
-          filter: val => val.toLowerCase(),
-          when: answers => answers.testing === 'mocha'
-        }]).then(answers => {
-          this.filters[answers.buildtool] = true;
-          insight.track('buildtool', answers.buildtool);
-
-          this.filters[answers.testing] = true;
-          insight.track('testing', answers.testing);
-          if(answers.testing === 'mocha') {
-            this.filters.jasmine = false;
-            this.filters.should = false;
-            this.filters.expect = false;
-            this.filters[answers.chai] = true;
-            insight.track('chai-assertions', answers.chai);
-          }
-          if(answers.testing === 'jasmine') {
-            this.filters.mocha = false;
-            this.filters.should = false;
-            this.filters.expect = false;
-          }
+          type: 'input',
+          name: 'name',
+          message: 'What s up'
+        }]).then((answers) => {
+          this.log(answers);
+          this.log('Your name:' + answers.name);
         });
       }
+      //clientPrompts: function() {
+      //  if(this.skipConfig) return;
+      //
+      //  this.log('# Client\n');
+      //
+      //  return this.prompt([{
+      //      type: 'list',
+      //      name: 'transpiler',
+      //      message: 'What would you like to write scripts with?',
+      //      choices: ['Babel', 'TypeScript'],
+      //      filter: val => {
+      //        return {
+      //          'Babel': 'babel',
+      //          'TypeScript': 'ts'
+      //        }[val];
+      //      }
+      //    }, {
+      //    // TODO: enable once Babel setup supports Flow
+      //    //   type: 'confirm',
+      //    //   name: 'flow',
+      //    //   message: 'Would you like to use Flow types with Babel?',
+      //    //   when: answers => answers.transpiler === 'babel'
+      //    // }, {
+      //      type: 'list',
+      //      name: 'markup',
+      //      message: 'What would you like to write markup with?',
+      //      choices: ['HTML', 'Jade'],
+      //      filter: val => val.toLowerCase()
+      //    }, {
+      //      type: 'list',
+      //      name: 'stylesheet',
+      //      default: 1,
+      //      message: 'What would you like to write stylesheets with?',
+      //      choices: ['CSS', 'Sass', 'Stylus', 'Less'],
+      //      filter: val => val.toLowerCase()
+      //    },  {
+      //      type: 'list',
+      //      name: 'router',
+      //      default: 1,
+      //      message: 'What Angular router would you like to use?',
+      //      choices: ['ngRoute', 'uiRouter'],
+      //      filter: val => val.toLowerCase()
+      //    }, {
+      //      type: 'confirm',
+      //      name: 'bootstrap',
+      //      message: 'Would you like to include Bootstrap?'
+      //    }, {
+      //      type: 'confirm',
+      //      name: 'uibootstrap',
+      //      message: 'Would you like to include UI Bootstrap?',
+      //      when: answers => answers.bootstrap
+      //    }]).then(answers => {
+      //      this.filters.js = true;
+      //      this.filters[answers.transpiler] = true;
+      //      insight.track('transpiler', answers.transpiler);
+      //
+      //      this.filters.flow = !!answers.flow;
+      //      insight.track('flow', !!answers.flow);
+      //
+      //      this.filters[answers.markup] = true;
+      //      insight.track('markup', answers.markup);
+      //
+      //      this.filters[answers.stylesheet] = true;
+      //      insight.track('stylesheet', answers.stylesheet);
+      //
+      //      this.filters[answers.router] = true;
+      //      insight.track('router', answers.router);
+      //
+      //      this.filters.bootstrap = !!answers.bootstrap;
+      //      insight.track('bootstrap', !!answers.bootstrap);
+      //
+      //      this.filters.uibootstrap =  !!answers.uibootstrap;
+      //      insight.track('uibootstrap', !!answers.uibootstrap);
+      //
+      //      this.scriptExt = answers.transpiler === 'ts' ? 'ts' : 'js';
+      //      this.templateExt = answers.markup;
+      //
+      //      var styleExt = {sass: 'scss', stylus: 'styl'}[answers.stylesheet];
+      //      this.styleExt = styleExt ? styleExt : answers.stylesheet;
+      //    });
+      //},
+      //serverPrompts: function() {
+      //  if(this.skipConfig) return;
+      //  var self = this;
+      //
+      //  this.log('\n# Server\n');
+      //
+      //  return this.prompt([{
+      //    type: 'checkbox',
+      //    name: 'odms',
+      //    message: 'What would you like to use for data modeling?',
+      //    choices: [{
+      //      value: 'mongoose',
+      //      name: 'Mongoose (MongoDB)',
+      //      checked: true
+      //    }, {
+      //      value: 'sequelize',
+      //      name: 'Sequelize (MySQL, SQLite, MariaDB, PostgreSQL)',
+      //      checked: false
+      //    }]
+      //  }, {
+      //    type: 'list',
+      //    name: 'models',
+      //    message: 'What would you like to use for the default models?',
+      //    choices: [ 'Mongoose', 'Sequelize' ],
+      //    filter: val => val.toLowerCase(),
+      //    when: answers => answers.odms && answers.odms.length > 1
+      //  }, {
+      //    type: 'confirm',
+      //    name: 'auth',
+      //    message: 'Would you scaffold out an authentication boilerplate?',
+      //    when: answers => answers.odms && answers.odms.length !== 0
+      //  }, {
+      //    type: 'checkbox',
+      //    name: 'oauth',
+      //    message: 'Would you like to include additional oAuth strategies?',
+      //    when: answers => answers.auth,
+      //    choices: [{
+      //      value: 'googleAuth',
+      //      name: 'Google',
+      //      checked: false
+      //    }, {
+      //      value: 'facebookAuth',
+      //      name: 'Facebook',
+      //      checked: false
+      //    }, {
+      //      value: 'twitterAuth',
+      //      name: 'Twitter',
+      //      checked: false
+      //    }]
+      //  }, {
+      //    type: 'confirm',
+      //    name: 'socketio',
+      //    message: 'Would you like to use socket.io?',
+      //    // to-do: should not be dependent on ODMs
+      //    when: answers => answers.odms && answers.odms.length !== 0,
+      //    default: true
+      //  }]).then(answers => {
+      //    if(answers.socketio) this.filters.socketio = true;
+      //    insight.track('socketio', !!answers.socketio);
+      //
+      //    if(answers.auth) this.filters.auth = true;
+      //    insight.track('auth', !!answers.auth);
+      //
+      //    if(answers.odms && answers.odms.length > 0) {
+      //      var models;
+      //      if(!answers.models) {
+      //        models = answers.odms[0];
+      //      } else {
+      //        models = answers.models;
+      //      }
+      //      this.filters.models = true;
+      //      this.filters[models + 'Models'] = true;
+      //      answers.odms.forEach(odm => {
+      //        this.filters[odm] = true;
+      //      });
+      //      insight.track('oauth', !!answers.oauth);
+      //    } else {
+      //      this.filters.noModels = true;
+      //    }
+      //    insight.track('odms', answers.odms && answers.odms.length > 0);
+      //    insight.track('mongoose', !!this.filters.mongoose);
+      //    insight.track('mongooseModels', !!this.filters.mongooseModels);
+      //    insight.track('sequelize', !!this.filters.sequelize);
+      //    insight.track('sequelizeModels', !!this.filters.sequelizeModels);
+      //
+      //    if(answers.oauth) {
+      //      if(answers.oauth.length) this.filters.oauth = true;
+      //      answers.oauth.forEach(oauthStrategy => {
+      //        this.filters[oauthStrategy] = true;
+      //      });
+      //    }
+      //    insight.track('oauth', !!this.filters.oauth);
+      //    insight.track('google-oauth', !!this.filters['googleAuth']);
+      //    insight.track('facebook-oauth', !!this.filters['facebookAuth']);
+      //    insight.track('twitter-oauth', !!this.filters['twitterAuth']);
+      //  });
+      //},
+      //projectPrompts: function() {
+      //  if(this.skipConfig) return;
+      //  var self = this;
+      //
+      //  this.log('\n# Project\n');
+      //
+      //  return this.prompt([{
+      //    type: 'list',
+      //    name: 'buildtool',
+      //    message: 'Would you like to use Gulp or Grunt?',
+      //    choices: ['Grunt', 'Gulp'],
+      //    default: 1,
+      //    filter: val => val.toLowerCase()
+      //  }, {
+      //    type: 'list',
+      //    name: 'testing',
+      //    message: 'What would you like to write tests with?',
+      //    choices: ['Jasmine', 'Mocha + Chai + Sinon'],
+      //    default: 1,
+      //    filter: function(val) {
+      //      return {
+      //        'Jasmine': 'jasmine',
+      //        'Mocha + Chai + Sinon': 'mocha'
+      //      }[val];
+      //    }
+      //  }, {
+      //    type: 'list',
+      //    name: 'chai',
+      //    message: 'What would you like to write Chai assertions with?',
+      //    choices: ['Expect', 'Should'],
+      //    filter: val => val.toLowerCase(),
+      //    when: answers => answers.testing === 'mocha'
+      //  }]).then(answers => {
+      //    this.filters[answers.buildtool] = true;
+      //    insight.track('buildtool', answers.buildtool);
+      //
+      //    this.filters[answers.testing] = true;
+      //    insight.track('testing', answers.testing);
+      //    if(answers.testing === 'mocha') {
+      //      this.filters.jasmine = false;
+      //      this.filters.should = false;
+      //      this.filters.expect = false;
+      //      this.filters[answers.chai] = true;
+      //      insight.track('chai-assertions', answers.chai);
+      //    }
+      //    if(answers.testing === 'jasmine') {
+      //      this.filters.mocha = false;
+      //      this.filters.should = false;
+      //      this.filters.expect = false;
+      //    }
+      //  });
+      //}
     };
   }
 
@@ -494,7 +506,7 @@ export class Generator extends Base {
         ]);
 
         let self = this;
-        this.sourceRoot(path.join(__dirname, '../../templates/app'));
+        this.sourceRoot(path.join(__dirname, '../../templates/webPage'));
         this.processDirectory('.', '.');
       },
       generateEndpoint: function() {
@@ -504,26 +516,26 @@ export class Generator extends Base {
         } else if(this.filters.sequelizeModels) {
           models = 'sequelize';
         }
-        this.composeWith('angular-fullstack:endpoint', {
-          options: {
-            route: '/api/things',
-            models: models
-          },
-          args: ['thing']
-        });
+        //this.composeWith('angular-fullstack:endpoint', {
+        //  options: {
+        //    route: '/api/things',
+        //    models: models
+        //  },
+        //  args: ['thing']
+        //});
       }
     };
   }
 
-  get install() {
-    return {
-      installDeps: function() {
-        this.installDependencies({
-          skipInstall: this.options['skip-install']
-        });
-      }
-    };
-  }
+  //get install() {
+  //  return {
+  //    installDeps: function() {
+  //      this.installDependencies({
+  //        skipInstall: this.options['skip-install']
+  //      });
+  //    }
+  //  };
+  //}
 
   get end() {
     return {};

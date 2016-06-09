@@ -1,0 +1,61 @@
+h1, h2, h3, h4, h5, h6 {
+  label {
+    margin-bottom: 0;
+  }
+
+  &:active, &:focus {
+    outline: none;
+  }
+}
+
+.list-group {
+  label {
+    margin-bottom: 0;
+  }
+}
+
+span.editable {
+  outline: none;
+  padding-bottom: 1px;
+  border-bottom: 1px;
+  &.focused {
+    border-bottom: solid 1px gray;
+  }
+  label {
+    border-right: solid 1px transparent;
+    padding-right: 1px;
+    box-sizing: content-box;
+    min-height: 0.9em;
+    cursor: pointer;
+  }
+}
+
+hr {
+  margin-top: 17px;
+  margin-bottom: 17px;
+}
+
+.em6 {
+  min-width: 6em;
+}
+
+p.list-group-item-text {
+  label {
+    margin-right: 0.25em;
+  }
+  span+label{
+    margin-left: 0.5em;
+  }
+}
+
+.ml-em {
+  margin-left: 1em;
+}
+
+.ml-15 {
+  margin-left: 15px;
+}
+
+.ml-10 {
+  margin-left: 10px;
+}
