@@ -2,7 +2,11 @@
   'use strict';
 
   angular
-    .module('webPage', [
+    .module('<%= scriptAppName %>', [
+      '<%= scriptAppName %>.core',
+      '<%= scriptAppName %>.components',
+      '<%= scriptAppName %>.directives',
+      '<%= scriptAppName %>.auth',
       'ngAnimate',
       'ngTouch',
       'ngSanitize',
@@ -13,15 +17,12 @@
       'ui.bootstrap',
       'LocalStorageModule',
       'as.sortable',
-      'core.services',
       'ng-appcache',
       'ui.mask',
       'sistemiumBootstrap',
-      'Models',
       'cgBusy'
     ])
-    .run(function(Auth,saApp){
-      Auth.init();
+    .run(function(saApp){
       saApp.init();
     });
 

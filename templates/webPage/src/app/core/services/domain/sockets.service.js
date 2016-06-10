@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('core.services')
+angular.module('<%= scriptAppName %>.core.services')
   .service('iosSockets', function($window,toastr,$q) {
 
     var SUBSCRIBE = 'subscribe';

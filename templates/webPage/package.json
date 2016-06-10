@@ -1,7 +1,7 @@
 {
-  "name": "webPage",
+  "name": "<%= scriptAppName %>",
   "version": "0.0.2",
-  "description": "Sistemium webapp",
+  "description": "Sistemium generator",
   "dependencies": {},
   "scripts": {
     "test": "gulp test"

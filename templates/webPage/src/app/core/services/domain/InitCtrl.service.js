@@ -2,7 +2,7 @@
 
   'use strict';
 
-  angular.module('authApiApp.core.services')
+  angular.module('<%= scriptAppName %>.core.services')
     .factory('InitCtrlService', function (saNgTable) {
 
       function setup(ctrl) {
@@ -14,7 +14,7 @@
       }
 
       return {
-        setup
+        setup: setup
       };
 
     })

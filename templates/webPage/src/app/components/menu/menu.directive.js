@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('webPage')
+    .module('<%= scriptAppName %>.components')
     .directive('stmMenu', acmeNavbar);
 
   /** @ngInject */
@@ -10,7 +10,7 @@
     return {
 
       restrict: 'AC',
-      templateUrl: 'app/domain/menu/menu.html',
+      templateUrl: 'app/components/menu/menu.html',
       scope: {
         header: '=',
         items: '='

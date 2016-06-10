@@ -2,9 +2,10 @@
 
 (function (ng) {
 
-  ng.module('authApiApp.core', [
-    'authApiApp.core.interceptors',
-    'authApiApp.core.services'
+  ng.module('<%= scriptAppName %>.core', [
+    '<%= scriptAppName %>.core.interceptors',
+    '<%= scriptAppName %>.core.services',
+    '<%= scriptAppName %>.core.filters'
   ]);
 
 })(angular);

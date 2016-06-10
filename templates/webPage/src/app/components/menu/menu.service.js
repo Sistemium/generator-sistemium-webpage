@@ -2,7 +2,7 @@
 
 (function () {
 
-    angular.module('webPage').service('Menu', function (InitService) {
+    angular.module('<%= scriptAppName %>.components').service('Menu', function (InitService) {
 
       return {
         root: function () {

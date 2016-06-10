@@ -2,7 +2,7 @@
 
 (function () {
 
-  angular.module('core.services').service('phaService', phaService);
+  angular.module('<%= scriptAppName %>.core.services').service('phaService', phaService);
 
   function phaService ($http,$rootScope) {
 

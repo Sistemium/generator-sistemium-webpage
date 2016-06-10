@@ -97,7 +97,7 @@
 
   }
 
-  angular.module('core.services').service('Language', function () {
+  angular.module('<%= scriptAppName %>.core.services').service('Language', function () {
 
     return {
       countableState: countableState,

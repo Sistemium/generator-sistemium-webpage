@@ -2,7 +2,7 @@
 
 (function () {
 
-    angular.module('core.services').service('SoundSynth', function ($window, toastr, $q) {
+    angular.module('<%= scriptAppName %>.core.services').service('SoundSynth', function ($window, toastr, $q) {
 
       // TODO rate depending on device
       var rate = 0.40;

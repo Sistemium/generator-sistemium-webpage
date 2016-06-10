@@ -2,7 +2,7 @@
 
 (function () {
 
-  angular.module('core.services')
+  angular.module('<%= scriptAppName %>.core.services')
     .service('Errors', function () {
 
       var errors = [];

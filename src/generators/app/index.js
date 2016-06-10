@@ -18,7 +18,7 @@ export class Generator extends Base {
   constructor(...args) {
     super(...args);
 
-    this.argument('name', { type: String, required: false });
+    this.argument('name', { type: String, required: true });
 
     this.option('skip-install', {
       desc: 'Do not install dependencies',
@@ -109,18 +109,7 @@ export class Generator extends Base {
 
   get prompting() {
     return {
-      myPrompts: function () {
-        this.log('# My prompts\n');
 
-        return this.prompt([{
-          type: 'input',
-          name: 'name',
-          message: 'What s up'
-        }]).then((answers) => {
-          this.log(answers);
-          this.log('Your name:' + answers.name);
-        });
-      }
       //clientPrompts: function() {
       //  if(this.skipConfig) return;
       //
@@ -202,6 +191,7 @@ export class Generator extends Base {
       //      this.styleExt = styleExt ? styleExt : answers.stylesheet;
       //    });
       //},
+
       //serverPrompts: function() {
       //  if(this.skipConfig) return;
       //  var self = this;
@@ -299,6 +289,7 @@ export class Generator extends Base {
       //    insight.track('twitter-oauth', !!this.filters['twitterAuth']);
       //  });
       //},
+
       //projectPrompts: function() {
       //  if(this.skipConfig) return;
       //  var self = this;
@@ -527,18 +518,22 @@ export class Generator extends Base {
     };
   }
 
-  //get install() {
-  //  return {
-  //    installDeps: function() {
-  //      this.installDependencies({
-  //        skipInstall: this.options['skip-install']
-  //      });
-  //    }
-  //  };
-  //}
+  get install() {
+    return {
+      installDeps: function() {
+        this.installDependencies({
+          skipInstall: this.options['skip-install']
+        });
+      }
+    };
+  }
 
   get end() {
-    return {};
+    return {
+      gulpServe: function() {
+        this.spawnCommand('gulp', ['serve']);
+      }
+    };
   }
 }
 

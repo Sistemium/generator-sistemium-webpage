@@ -2,7 +2,7 @@
 
 (function () {
 
-  angular.module('webPage').service('IosAdapter', function ($window, $timeout, DSUtils, $log) {
+  angular.module('<%= scriptAppName %>').service('IosAdapter', function ($window, $timeout, DSUtils, $log) {
 
     var ios = $window.webkit;
     var requests = {};

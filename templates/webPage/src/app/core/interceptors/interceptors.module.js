@@ -2,6 +2,6 @@
 
 (function () {
 
-  angular.module('authApiApp.core.interceptors', []);
+  angular.module('<%= scriptAppName %>.core.interceptors', []);
 
 }());

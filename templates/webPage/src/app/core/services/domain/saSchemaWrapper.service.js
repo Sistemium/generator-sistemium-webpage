@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('authApiApp.core.services')
+angular.module('<%= scriptAppName %>.core.services')
   .service('schema', function (saSchema,$http) {
 
     return saSchema({

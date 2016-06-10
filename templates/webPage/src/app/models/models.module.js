@@ -7,7 +7,7 @@
     || 'https://api.sistemium.com/v4d/dev/'
   ;
 
-  angular.module('Models', ['sistemium'])
+  angular.module('<%= scriptAppName %>.models', ['sistemium'])
 
     .config(function (DSHttpAdapterProvider) {
       angular.extend(DSHttpAdapterProvider.defaults, {

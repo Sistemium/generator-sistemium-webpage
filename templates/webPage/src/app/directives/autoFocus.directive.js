@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  angular.module('core.services')
+  angular.module('<%= scriptAppName %>.directives')
     .directive('autoFocus', autoFocus);
 
   function autoFocus($timeout) {

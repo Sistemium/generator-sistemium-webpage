@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('webPage')
+    .module('<%= scriptAppName %>')
     .run(run)
     .service('DEBUG',debugService)
   ;
@@ -11,7 +11,7 @@
     return saDebug.log('stg:log');
   }
 
-  function run(Sockets,InitService,Auth,IosAdapter,Schema,Picker,DEBUG) {
+  function run(Sockets,InitService,DEBUG) {
 
     InitService.then(Sockets.init);
 
@@ -29,14 +29,6 @@
     Sockets.on('jsData:update',function(data){
       DEBUG ('jsData:update', data);
     });
-
-    var lastPicker = window.localStorage.getItem('currentPickerId');
-
-    if (lastPicker) {
-      Picker.setCurrentById(lastPicker).then(function(p){
-        Auth.login(p);
-      });
-    }
 
   }
 

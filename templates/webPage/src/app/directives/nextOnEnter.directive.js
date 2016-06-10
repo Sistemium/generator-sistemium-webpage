@@ -2,7 +2,7 @@
 
 (function () {
 
-  angular.module('webPage')
+  angular.module('<%= scriptAppName %>.directives')
     .directive('nextOnEnter', nextOnEnter);
 
   /** @ngInject */

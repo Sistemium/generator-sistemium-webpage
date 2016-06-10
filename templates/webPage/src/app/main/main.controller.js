@@ -2,12 +2,15 @@
   'use strict';
 
   angular
-    .module('webPage')
+    .module('<%= scriptAppName %>')
     .controller('MainController', MainController);
 
   /** @ngInject */
-  function MainController() {
+  function MainController(Menu) {
+    var vm = this;
 
+    //vm.Auth = Auth;
+    vm.data = Menu.root();
 
   }
 })();

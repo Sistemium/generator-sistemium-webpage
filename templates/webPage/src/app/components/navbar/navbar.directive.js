@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('webPage')
+    .module('<%= scriptAppName %>.components')
     .directive('navbar', acmeNavbar);
 
   /** @ngInject */

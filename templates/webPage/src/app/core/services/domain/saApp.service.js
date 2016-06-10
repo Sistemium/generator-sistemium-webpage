@@ -2,7 +2,7 @@
 
 (function () {
 
-  function saApp ($window,Schema) {
+  function saApp ($window,schema) {
 
     var appIdKey = 'saAppId';
 
@@ -15,7 +15,7 @@
 
     function init () {
 
-      var LogMessage = Schema.model('LogMessage');
+      var LogMessage = schema.model('LogMessage');
       var logMsg = {
         event: 'appInit',
         appName: 'j-sistemium',
@@ -37,7 +37,7 @@
 
   }
 
-  angular.module('core.services')
+  angular.module('<%= scriptAppName %>.core.services')
     .service('saApp', saApp);
 
 })();

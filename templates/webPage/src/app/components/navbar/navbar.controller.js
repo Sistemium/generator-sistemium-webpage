@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  function NavbarController(Auth,Menu,$window,$scope,$state,$timeout) {
+  function NavbarController(Menu,$window,$scope,$state,$timeout) {
 
     var vm = this;
 
@@ -25,7 +25,7 @@
 
       isCollapsed: true,
 
-      auth: Auth,
+      //auth: Auth,
 
       onBrandClick: function () {
         if (vm.currentItem) {
@@ -52,7 +52,7 @@
 
   }
 
-  angular.module('webPage')
+  angular.module('<%= scriptAppName %>.components')
     .controller('NavbarController', NavbarController);
 
 })();

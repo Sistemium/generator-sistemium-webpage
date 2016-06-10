@@ -2,7 +2,8 @@
 
 (function () {
 
-  angular.module('authApiApp.core.services', [
+  angular.module('<%= scriptAppName %>.core.services', [
+    '<%= scriptAppName %>.models',
     'sistemium'
   ]);
 

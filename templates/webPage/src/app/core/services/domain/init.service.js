@@ -57,7 +57,7 @@
 
   }
 
-  angular.module('core.services')
+  angular.module('<%= scriptAppName %>.core.services')
     .service('InitService', InitService);
 
 })();

@@ -3,7 +3,7 @@
   'use strict';
 
   angular
-    .module('webPage')
+    .module('<%= scriptAppName %>')
     .constant('moment', moment)
     .value('cgBusyDefaults',{
       message:'Идет загрузка'

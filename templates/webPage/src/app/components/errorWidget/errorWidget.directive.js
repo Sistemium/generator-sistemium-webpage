@@ -2,7 +2,7 @@
 
 (function () {
 
-  angular.module('core.services')
+  angular.module('<%= scriptAppName %>.components')
     .directive('errorWidget', function () {
 
       return {

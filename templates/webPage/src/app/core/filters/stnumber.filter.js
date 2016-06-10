@@ -1,4 +1,4 @@
-angular.module('core.services')
+angular.module('<%= scriptAppName %>.core.filters')
   .filter('stnumber', function($filter) {
     return function stnumberFilter (input, minDecimals) {
 

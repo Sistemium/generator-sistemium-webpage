@@ -2,7 +2,7 @@
 
 (function () {
 
-  angular.module('<%= scriptAppName + ".core.interceptors" %>')
+  angular.module('<%= scriptAppName %>.core.interceptors')
     .factory('errorInterceptor', function ($q, $injector) {
       return {
         /**
@@ -37,7 +37,7 @@
           } else if (response.data && response.data.message) {
             message = response.data.message;
           } else {
-            if (typeof response.data === 'string') {
+            if (angular.isString(response.data)) {
               message = response.data;
               if (message.length === 0) {
                 message = $injector.get('saHttpStatusService').getStatusCodeText(response.status);
